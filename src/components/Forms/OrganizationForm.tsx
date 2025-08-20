@@ -138,16 +138,21 @@ export default function OrganizationForm({
     const code = `${city}${year}${random}`;
     
     // Actualizar solo el communityCode en settings.security
-    setFormData(prev => ({
-      ...prev,
-      settings: {
-        ...prev.settings,
-        security: {
-          ...(prev.settings?.security as Record<string, unknown> || {}),
-          communityCode: code
+    setFormData(prev => {
+      const currentSettings = prev.settings || {};
+      const currentSecurity = currentSettings.security || {};
+      
+      return {
+        ...prev,
+        settings: {
+          ...currentSettings,
+          security: {
+            ...currentSecurity,
+            communityCode: code
+          }
         }
-      }
-    }));
+      };
+    });
   };
 
   if (!isOpen) return null;
