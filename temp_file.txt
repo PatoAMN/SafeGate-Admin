@@ -132,28 +132,6 @@ export default function OrganizationForm({
   };
 
   const generateCommunityCode = () => {
-    const city = formData.city?.substring(0, 2).toUpperCase() || 'XX';
-    const year = new Date().getFullYear();
-    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const code = `${city}${year}${random}`;
-    
-    // ACTUALIZADO: Preservar estructura completa de settings para compatibilidad TypeScript
-    setFormData(prev => {
-      const currentSettings = prev.settings || {};
-      const currentSecurity = currentSettings.security || {};
-      
-      return {
-        ...prev,
-        settings: {
-          ...currentSettings,
-          security: {
-            ...currentSecurity,
-            communityCode: code
-          }
-        }
-      };
-    });
-  };
 
   if (!isOpen) return null;
 

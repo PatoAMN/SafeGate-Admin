@@ -137,7 +137,7 @@ export default function OrganizationForm({
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
     const code = `${city}${year}${random}`;
     
-    // ACTUALIZADO: Preservar estructura completa de settings para compatibilidad TypeScript
+    // Actualizar solo el communityCode en settings.security
     setFormData(prev => {
       const currentSettings = prev.settings || {};
       const currentSecurity = currentSettings.security || {};

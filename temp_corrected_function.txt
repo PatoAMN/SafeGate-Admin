@@ -1,0 +1,25 @@
+  const generateCommunityCode = () => {
+    const city = formData.city?.substring(0, 2).toUpperCase() || 'XX';
+    const year = new Date().getFullYear();
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const code = `${city}${year}${random}`;
+    
+    // ACTUALIZADO: Preservar estructura completa de settings para compatibilidad TypeScript
+    setFormData(prev => ({
+      ...prev,
+      settings: {
+        theme: prev.settings?.theme || { primaryColor: '#3B82F6', secondaryColor: '#1F2937', logo: '' },
+        security: {
+          qrCodeExpiryHours: prev.settings?.security?.qrCodeExpiryHours || 24,
+          requirePhotoForGuests: prev.settings?.security?.requirePhotoForGuests || false,
+          maxGuestsPerResident: prev.settings?.security?.maxGuestsPerResident || 5,
+          communityCode: code
+        },
+        notifications: {
+          emailNotifications: prev.settings?.notifications?.emailNotifications || true,
+          pushNotifications: prev.settings?.notifications?.pushNotifications || true,
+          smsNotifications: prev.settings?.notifications?.smsNotifications || false
+        }
+      }
+    }));
+  };
