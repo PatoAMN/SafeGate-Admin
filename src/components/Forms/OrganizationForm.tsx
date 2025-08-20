@@ -150,7 +150,7 @@ export default function OrganizationForm({
             ...currentSecurity,
             communityCode: code
           }
-        }
+        } as typeof currentSettings
       };
     });
   };
