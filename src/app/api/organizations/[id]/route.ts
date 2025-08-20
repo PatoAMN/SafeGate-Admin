@@ -19,8 +19,9 @@ const db = getFirestore(app);
 // GET /api/organizations/[id]
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { params } = await context.params;
   try {
     const { id } = params;
     const organizationRef = doc(db, 'organizations', id);
@@ -51,8 +52,9 @@ export async function GET(
 // PUT /api/organizations/[id]
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { params } = await context.params;
   try {
     const { id } = params;
     const body = await request.json();
@@ -87,8 +89,9 @@ export async function PUT(
 // DELETE /api/organizations/[id]
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { params } = await context.params;
   try {
     const { id } = params;
     const organizationRef = doc(db, 'organizations', id);
