@@ -67,7 +67,7 @@ export default function OrganizationForm({
       setFormData(prev => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof Organization],
+          ...(prev[parent as keyof Organization] as Record<string, any> || {}),
           [child]: value
         }
       }));
@@ -80,7 +80,7 @@ export default function OrganizationForm({
     setFormData(prev => ({
       ...prev,
       [parent]: {
-        ...prev[parent as keyof Organization],
+        ...(prev[parent as keyof Organization] as Record<string, any> || {}),
         [child]: value
       }
     }));
