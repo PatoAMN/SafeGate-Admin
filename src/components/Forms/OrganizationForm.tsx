@@ -61,7 +61,7 @@ export default function OrganizationForm({
     }
   }, [organization, mode]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | number | boolean) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
       setFormData(prev => ({
@@ -76,7 +76,7 @@ export default function OrganizationForm({
     }
   };
 
-  const handleNestedChange = (parent: string, child: string, value: any) => {
+  const handleNestedChange = (parent: string, child: string, value: string | number | boolean) => {
     setFormData(prev => ({
       ...prev,
       [parent]: {

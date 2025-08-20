@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import { 
   MagnifyingGlassIcon, 
   BellIcon, 
-  UserCircleIcon,
-  XMarkIcon
+  UserCircleIcon
 } from '@heroicons/react/24/outline';
 import { useData } from '@/contexts/DataContext';
 

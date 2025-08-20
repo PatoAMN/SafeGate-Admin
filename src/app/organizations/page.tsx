@@ -289,7 +289,7 @@ export default function OrganizationsPage() {
               <h3 className="text-lg font-medium text-gray-900 mt-4">Confirmar eliminación</h3>
               <div className="mt-2 px-7 py-3">
                 <p className="text-sm text-gray-500">
-                  ¿Estás seguro de que quieres eliminar la comunidad "{selectedOrg.displayName}"? 
+                  ¿Estás seguro de que quieres eliminar la comunidad &quot;{selectedOrg.displayName}&quot;? 
                   Esta acción no se puede deshacer.
                 </p>
               </div>

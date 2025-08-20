@@ -6,7 +6,6 @@ import {
   PlusIcon, 
   PencilIcon, 
   TrashIcon,
-  EyeIcon,
   ShieldCheckIcon,
   UserIcon,
   BuildingOfficeIcon
@@ -65,7 +64,7 @@ export default function UsersPage() {
       if (usersResponse.ok) {
         const data = await usersResponse.json();
         // Convertir timestamps de Firestore a Date
-        const usersWithDates = data.map((user: any) => ({
+        const usersWithDates = data.map((user: Record<string, any>) => ({
           ...user,
           createdAt: user.createdAt ? new Date(user.createdAt.seconds * 1000) : new Date(),
           lastLogin: user.lastLogin ? new Date(user.lastLogin.seconds * 1000) : undefined
@@ -272,7 +271,7 @@ export default function UsersPage() {
                 <select
                   id="role-filter"
                   value={filterRole}
-                  onChange={(e) => setFilterRole(e.target.value as any)}
+                  onChange={(e) => setFilterRole(e.target.value as string)}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
                   <option value="all">Todos los roles</option>
