@@ -21,7 +21,7 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { params } = await context.params;
+  const params = await context.params;
   try {
     const { id } = params;
     const organizationRef = doc(db, 'organizations', id);
@@ -54,7 +54,7 @@ export async function PUT(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { params } = await context.params;
+  const params = await context.params;
   try {
     const { id } = params;
     const body = await request.json();
@@ -91,7 +91,7 @@ export async function DELETE(
   request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
-  const { params } = await context.params;
+  const params = await context.params;
   try {
     const { id } = params;
     const organizationRef = doc(db, 'organizations', id);
