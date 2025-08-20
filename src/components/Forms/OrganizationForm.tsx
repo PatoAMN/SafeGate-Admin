@@ -137,10 +137,17 @@ export default function OrganizationForm({
     const random = Math.random().toString(36).substring(2, 6).toUpperCase();
     const code = `${city}${year}${random}`;
     
-    handleNestedChange('settings', 'security', {
-      ...formData.settings?.security,
-      communityCode: code
-    });
+    // Actualizar solo el communityCode en settings.security
+    setFormData(prev => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        security: {
+          ...(prev.settings?.security as Record<string, unknown> || {}),
+          communityCode: code
+        }
+      }
+    }));
   };
 
   if (!isOpen) return null;
