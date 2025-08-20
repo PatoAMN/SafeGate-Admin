@@ -64,10 +64,14 @@ export default function UsersPage() {
       if (usersResponse.ok) {
         const data = await usersResponse.json();
         // Convertir timestamps de Firestore a Date
-        const usersWithDates = data.map((user: Record<string, any>) => ({
+        const usersWithDates = data.map((user: Record<string, unknown>) => ({
           ...user,
-          createdAt: user.createdAt ? new Date(user.createdAt.seconds * 1000) : new Date(),
-          lastLogin: user.lastLogin ? new Date(user.lastLogin.seconds * 1000) : undefined
+          createdAt: user.createdAt && typeof user.createdAt === 'object' && 'seconds' in user.createdAt 
+            ? new Date((user.createdAt as { seconds: number }).seconds * 1000) 
+            : new Date(),
+          lastLogin: user.lastLogin && typeof user.lastLogin === 'object' && 'seconds' in user.lastLogin
+            ? new Date((user.lastLogin as { seconds: number }).seconds * 1000)
+            : undefined
         }));
         setUsers(usersWithDates);
       } else {
@@ -133,7 +137,7 @@ export default function UsersPage() {
         });
 
         if (response.ok) {
-          const updatedUser = await response.json();
+          await response.json(); // Solo para verificar que la respuesta es válida
           setUsers(users.map(user => 
             user.id === editingUser.id 
               ? { ...user, ...userData, updatedAt: new Date() }
