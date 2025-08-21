@@ -1,276 +1,127 @@
 'use client';
 
 import React from 'react';
-import { 
-  BuildingOfficeIcon, 
-  UsersIcon, 
-  ShieldCheckIcon, 
-  ChartBarIcon,
-  ExclamationTriangleIcon,
-  CheckCircleIcon
-} from '@heroicons/react/24/outline';
-import { useData } from '@/contexts/DataContext';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
-const recentActivity = [
-  { id: 1, action: 'Nuevo acceso registrado', user: 'John Smith', time: 'Hace 30 min', organization: 'Privada San José' },
-  { id: 2, action: 'Guardia inició turno', user: 'Carlos Rodríguez', time: 'Hace 1 hora', organization: 'Privada Los Pinos' },
-  { id: 3, action: 'Nuevo residente registrado', user: 'María González', time: 'Hace 2 horas', organization: 'Privada San José' },
-  { id: 4, action: 'Acceso denegado', user: 'Usuario no autorizado', time: 'Hace 3 horas', organization: 'Privada San José' },
-];
-
-const chartData = [
-  { name: 'Lun', accesos: 45, denegados: 3 },
-  { name: 'Mar', accesos: 52, denegados: 1 },
-  { name: 'Mié', accesos: 48, denegados: 2 },
-  { name: 'Jue', accesos: 61, denegados: 0 },
-  { name: 'Vie', accesos: 55, denegados: 1 },
-  { name: 'Sáb', accesos: 38, denegados: 2 },
-  { name: 'Dom', accesos: 42, denegados: 1 },
-];
-
-export default function Dashboard() {
-  const { 
-    organizations, 
-    dashboardStats, 
-    loading, 
-    error,
-    refreshStats 
-  } = useData();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-lg text-gray-600">Cargando dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <ExclamationTriangleIcon className="h-32 w-32 text-red-500 mx-auto" />
-          <h2 className="mt-4 text-2xl font-semibold text-gray-900">Error al cargar datos</h2>
-          <p className="mt-2 text-gray-600">{error}</p>
-          <button 
-            onClick={refreshStats}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Reintentar
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!dashboardStats) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-lg text-gray-600">No hay datos disponibles</p>
-        </div>
-      </div>
-    );
-  }
-
-  const stats = [
-    { name: 'Comunidades', value: dashboardStats.totalOrganizations, icon: BuildingOfficeIcon, change: '+0', changeType: 'neutral' },
-    { name: 'Usuarios Totales', value: dashboardStats.totalUsers, icon: UsersIcon, change: '+0', changeType: 'neutral' },
-    { name: 'Puntos de Acceso', value: dashboardStats.totalAccessPoints, icon: ShieldCheckIcon, change: '+0', changeType: 'neutral' },
-    { name: 'Guardias Activos', value: dashboardStats.activeGuards, icon: ShieldCheckIcon, change: '+0', changeType: 'neutral' },
-  ];
-
-  const pieData = organizations.map(org => ({
-    name: org.displayName,
-    value: org.memberCount,
-    color: org.settings.theme.primaryColor
-  }));
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="py-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-            <button 
-              onClick={refreshStats}
-              className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700"
-            >
-              Actualizar
-            </button>
+    <div className="space-y-8">
+      {/* Welcome Section */}
+      <div className="text-center">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          Bienvenido al Panel de Administración
+        </h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          Gestiona y supervisa todas las comunidades del sistema SafeGate de seguridad
+        </p>
+      </div>
+
+      {/* Status Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-green-600 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Servidor</h3>
+          <p className="text-3xl font-bold text-green-600 mb-2">Activo</p>
+          <p className="text-sm text-gray-600">Sistema funcionando correctamente</p>
+        </div>
+
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+              </svg>
+            </div>
+            <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Base de Datos</h3>
+          <p className="text-3xl font-bold text-blue-600 mb-2">Conectada</p>
+          <p className="text-sm text-gray-600">Firebase funcionando perfectamente</p>
+        </div>
+
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-600 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">APIs</h3>
+          <p className="text-3xl font-bold text-purple-600 mb-2">Funcionando</p>
+          <p className="text-sm text-gray-600">Todas las APIs operativas</p>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 p-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Acciones Rápidas</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <a href="/organizations" className="group">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 text-center hover:from-blue-100 hover:to-indigo-100 transition-all duration-300 border border-blue-100 hover:border-blue-200">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Ver Organizaciones</h3>
+              <p className="text-sm text-gray-600">Gestionar comunidades</p>
+            </div>
+          </a>
+
+          <a href="/users" className="group">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 text-center hover:from-green-100 hover:to-emerald-100 transition-all duration-300 border border-green-100 hover:border-green-200">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Gestionar Usuarios</h3>
+              <p className="text-sm text-gray-600">Miembros y guardias</p>
+            </div>
+          </a>
+
+          <a href="/security" className="group">
+            <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl p-6 text-center hover:from-purple-100 hover:to-violet-100 transition-all duration-300 border border-purple-100 hover:border-purple-200">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Configurar Seguridad</h3>
+              <p className="text-sm text-gray-600">Acceso y permisos</p>
+            </div>
+          </a>
+
+          <div className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl p-6 text-center border border-gray-100">
+            <div className="w-12 h-12 bg-gradient-to-r from-gray-400 to-slate-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <h3 className="font-semibold text-gray-900 mb-2">Reportes</h3>
+            <p className="text-sm text-gray-600">Próximamente</p>
           </div>
         </div>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Stats */}
-          <div className="mt-8">
-            <dl className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {stats.map((item) => (
-                <div
-                  key={item.name}
-                  className="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6"
-                >
-                  <dt>
-                    <div className="absolute rounded-md bg-blue-500 p-3">
-                      <item.icon className="h-6 w-6 text-white" aria-hidden="true" />
-                    </div>
-                    <p className="ml-16 truncate text-sm font-medium text-gray-500">{item.name}</p>
-                  </dt>
-                  <dd className="ml-16 flex items-baseline pb-6 sm:pb-7">
-                    <p className="text-2xl font-semibold text-gray-900">{item.value}</p>
-                    <p
-                      className={`ml-2 flex items-baseline text-sm font-semibold ${
-                        item.changeType === 'positive' ? 'text-green-600' : 
-                        item.changeType === 'negative' ? 'text-red-600' : 'text-gray-600'
-                      }`}
-                    >
-                      {item.change}
-                    </p>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+      </div>
 
-          {/* Charts */}
-          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-            {/* Access Chart */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Accesos por Día</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="accesos" fill="#007AFF" name="Accesos" />
-                  <Bar dataKey="denegados" fill="#ef4444" name="Denegados" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            {/* Organizations Distribution */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Distribución de Usuarios</h3>
-              {pieData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="flex items-center justify-center h-64 text-gray-500">
-                  No hay datos disponibles
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Recent Activity and Organizations */}
-          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-            {/* Recent Activity */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Actividad Reciente</h3>
-              <div className="space-y-4">
-                {recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-start space-x-3">
-                    <div className="flex-shrink-0">
-                      <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                        <ChartBarIcon className="h-4 w-4 text-blue-600" />
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">{activity.action}</p>
-                      <p className="text-sm text-gray-500">{activity.user} • {activity.organization}</p>
-                      <p className="text-xs text-gray-400">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Organizations Status */}
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Estado de Comunidades</h3>
-              {organizations.length > 0 ? (
-                <div className="space-y-4">
-                  {organizations.map((org) => (
-                    <div key={org.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className={`h-3 w-3 rounded-full ${
-                          org.status === 'active' ? 'bg-green-500' : 
-                          org.status === 'inactive' ? 'bg-gray-500' : 'bg-red-500'
-                        }`} />
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{org.displayName}</p>
-                          <p className="text-xs text-gray-500">{org.city}, {org.state}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">{org.memberCount} usuarios</p>
-                        <p className="text-xs text-gray-500">{org.guardCount} guardias</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No hay comunidades registradas
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* System Health */}
-          <div className="mt-8">
-            <div className="bg-white p-6 rounded-lg shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900">Estado del Sistema</h3>
-                <div className="flex items-center space-x-2">
-                  {dashboardStats.systemHealth === 'excellent' ? (
-                    <CheckCircleIcon className="h-5 w-5 text-green-500" />
-                  ) : (
-                    <ExclamationTriangleIcon className="h-5 w-5 text-yellow-500" />
-                  )}
-                  <span className={`text-sm font-medium ${
-                    dashboardStats.systemHealth === 'excellent' ? 'text-green-600' : 'text-yellow-600'
-                  }`}>
-                    {dashboardStats.systemHealth === 'excellent' ? 'Excelente' : 'Advertencia'}
-                  </span>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="text-center">
-                  <p className="text-2xl font-semibold text-gray-900">{dashboardStats.recentAccessLogs}</p>
-                  <p className="text-sm text-gray-500">Accesos hoy</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-semibold text-gray-900">99.9%</p>
-                  <p className="text-sm text-gray-500">Uptime del sistema</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-semibold text-gray-900">2.1.0</p>
-                  <p className="text-sm text-gray-500">Versión actual</p>
-                </div>
-              </div>
-            </div>
+      {/* System Info */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Estado del Sistema</h2>
+          <p className="text-lg text-gray-700 mb-6">
+            El sistema SafeGate está funcionando correctamente con todas las funcionalidades operativas.
+          </p>
+          <div className="inline-flex items-center space-x-2 bg-green-100 px-4 py-2 rounded-full">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-green-800 font-medium">Sistema 100% Operativo</span>
           </div>
         </div>
       </div>

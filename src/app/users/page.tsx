@@ -64,14 +64,10 @@ export default function UsersPage() {
       if (usersResponse.ok) {
         const data = await usersResponse.json();
         // Convertir timestamps de Firestore a Date
-        const usersWithDates = data.map((user: Record<string, unknown>) => ({
+        const usersWithDates = data.map((user: any) => ({
           ...user,
-          createdAt: user.createdAt && typeof user.createdAt === 'object' && 'seconds' in user.createdAt 
-            ? new Date((user.createdAt as { seconds: number }).seconds * 1000) 
-            : new Date(),
-          lastLogin: user.lastLogin && typeof user.lastLogin === 'object' && 'seconds' in user.lastLogin
-            ? new Date((user.lastLogin as { seconds: number }).seconds * 1000)
-            : undefined
+          createdAt: user.createdAt ? new Date(user.createdAt.seconds * 1000) : new Date(),
+          lastLogin: user.lastLogin ? new Date(user.lastLogin.seconds * 1000) : undefined
         }));
         setUsers(usersWithDates);
       } else {
@@ -275,7 +271,7 @@ export default function UsersPage() {
                 <select
                   id="role-filter"
                   value={filterRole}
-                  onChange={(e) => setFilterRole(e.target.value as 'all' | 'member' | 'guard' | 'admin')}
+                  onChange={(e) => setFilterRole(e.target.value as any)}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
                   <option value="all">Todos los roles</option>

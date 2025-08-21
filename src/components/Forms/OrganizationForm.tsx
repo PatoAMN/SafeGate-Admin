@@ -1,25 +1,56 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Organization } from '@/types';
+
+interface OrganizationFormData {
+  name: string;
+  displayName: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  contactInfo: {
+    email: string;
+    phone: string;
+    website: string;
+  };
+  settings: {
+    security: {
+      communityCode: string;
+      qrCodeExpiryHours: number;
+      requirePhotoForGuests: boolean;
+      maxGuestsPerResident: number;
+    };
+    theme: {
+      primaryColor: string;
+      secondaryColor: string;
+      logo: string | null;
+    };
+    notifications: {
+      emailNotifications: boolean;
+      pushNotifications: boolean;
+      smsNotifications: boolean;
+    };
+  };
+}
 
 interface OrganizationFormProps {
-  organization?: Organization | null;
+  organization?: OrganizationFormData | null;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: Partial<Organization>) => Promise<void>;
+  onSubmit: (data: OrganizationFormData) => void;
   mode: 'create' | 'edit';
 }
 
-export default function OrganizationForm({ 
-  organization, 
-  isOpen, 
-  onClose, 
-  onSubmit, 
-  mode 
+export default function OrganizationForm({
+  organization,
+  isOpen,
+  onClose,
+  onSubmit,
+  mode
 }: OrganizationFormProps) {
-  const [formData, setFormData] = useState<Partial<Organization>>({
+  const [formData, setFormData] = useState<OrganizationFormData>({
     name: '',
     displayName: '',
     address: '',
@@ -28,21 +59,21 @@ export default function OrganizationForm({
     zipCode: '',
     country: 'México',
     contactInfo: {
-      phone: '',
       email: '',
+      phone: '',
       website: ''
     },
     settings: {
-      theme: {
-        primaryColor: '#007AFF',
-        secondaryColor: '#10b981',
-        logo: undefined
-      },
       security: {
+        communityCode: '',
         qrCodeExpiryHours: 24,
-        requirePhotoForGuests: true,
-        maxGuestsPerResident: 5,
-        communityCode: ''
+        requirePhotoForGuests: false,
+        maxGuestsPerResident: 5
+      },
+      theme: {
+        primaryColor: '#3B82F6',
+        secondaryColor: '#1F2937',
+        logo: null
       },
       notifications: {
         emailNotifications: true,
@@ -53,7 +84,6 @@ export default function OrganizationForm({
   });
 
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (organization && mode === 'edit') {
@@ -61,13 +91,13 @@ export default function OrganizationForm({
     }
   }, [organization, mode]);
 
-  const handleInputChange = (field: string, value: string | number | boolean) => {
+  const handleInputChange = (field: string, value: any) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.');
       setFormData(prev => ({
         ...prev,
         [parent]: {
-          ...(prev[parent as keyof Organization] as Record<string, unknown> || {}),
+          ...prev[parent as keyof OrganizationFormData],
           [child]: value
         }
       }));
@@ -76,52 +106,39 @@ export default function OrganizationForm({
     }
   };
 
-  const handleNestedChange = (parent: string, child: string, value: string | number | boolean) => {
+  const handleNestedChange = (parent: string, child: string, value: any) => {
     setFormData(prev => ({
       ...prev,
       [parent]: {
-        ...(prev[parent as keyof Organization] as Record<string, unknown> || {}),
+        ...prev[parent as keyof OrganizationFormData],
         [child]: value
       }
     }));
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.name?.trim()) {
-      newErrors.name = 'El nombre es requerido';
-    }
-    if (!formData.displayName?.trim()) {
-      newErrors.displayName = 'El nombre de visualización es requerido';
-    }
-    if (!formData.address?.trim()) {
-      newErrors.address = 'La dirección es requerida';
-    }
-    if (!formData.city?.trim()) {
-      newErrors.city = 'La ciudad es requerida';
-    }
-    if (!formData.state?.trim()) {
-      newErrors.state = 'El estado es requerido';
-    }
-    if (!formData.contactInfo?.email?.trim()) {
-      newErrors.email = 'El email es requerido';
-    }
-    if (!formData.settings?.security?.communityCode?.trim()) {
-      newErrors.communityCode = 'El código de comunidad es requerido';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const generateCommunityCode = () => {
+    const city = formData.city?.substring(0, 2).toUpperCase() || 'XX';
+    const year = new Date().getFullYear();
+    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const code = `${city}${year}${random}`;
+    
+    setFormData(prev => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        security: {
+          ...prev.settings.security,
+          communityCode: code
+        }
+      }
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     
-    if (!validateForm()) return;
-
     try {
-      setLoading(true);
       await onSubmit(formData);
       onClose();
     } catch (error) {
@@ -131,330 +148,237 @@ export default function OrganizationForm({
     }
   };
 
-  const generateCommunityCode = () => {
-    const city = formData.city?.substring(0, 2).toUpperCase() || 'XX';
-    const year = new Date().getFullYear();
-    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const code = `${city}${year}${random}`;
-    
-    // Actualizar solo el communityCode en settings.security
-    setFormData(prev => {
-      const currentSettings = prev.settings || {};
-      const currentSecurity = currentSettings.security || {};
-      
-      return {
-        ...prev,
-        settings: {
-          ...currentSettings,
-          security: {
-            ...currentSecurity,
-            communityCode: code
-          }
-        } as typeof currentSettings
-      };
-    });
-  };
-
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-10 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {mode === 'create' ? 'Nueva Comunidad' : 'Editar Comunidad'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <XMarkIcon className="h-6 w-6" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nombre del Sistema *
-              </label>
-              <input
-                type="text"
-                value={formData.name || ''}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md ${
-                  errors.name ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="privada_san_jose"
-              />
-              {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nombre de Visualización *
-              </label>
-              <input
-                type="text"
-                value={formData.displayName || ''}
-                onChange={(e) => handleInputChange('displayName', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md ${
-                  errors.displayName ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Privada San José"
-              />
-              {errors.displayName && <p className="mt-1 text-sm text-red-600">{errors.displayName}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dirección *
-              </label>
-              <input
-                type="text"
-                value={formData.address || ''}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md ${
-                  errors.address ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Calle San José 123"
-              />
-              {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ciudad *
-              </label>
-              <input
-                type="text"
-                value={formData.city || ''}
-                onChange={(e) => handleInputChange('city', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md ${
-                  errors.city ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Monterrey"
-              />
-              {errors.city && <p className="mt-1 text-sm text-red-600">{errors.city}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Estado *
-              </label>
-              <input
-                type="text"
-                value={formData.state || ''}
-                onChange={(e) => handleInputChange('state', e.target.value)}
-                className={`w-full px-3 py-2 border rounded-md ${
-                  errors.state ? 'border-red-500' : 'border-gray-300'
-                }`}
-                placeholder="Nuevo León"
-              />
-              {errors.state && <p className="mt-1 text-sm text-red-600">{errors.state}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Código Postal
-              </label>
-              <input
-                type="text"
-                value={formData.zipCode || ''}
-                onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="64000"
-              />
-            </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {mode === 'create' ? 'Nueva Organización' : 'Editar Organización'}
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
-          {/* Contact Information */}
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Información de Contacto</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Teléfono
-                </label>
-                <input
-                  type="tel"
-                  value={formData.contactInfo?.phone || ''}
-                  onChange={(e) => handleNestedChange('contactInfo', 'phone', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="+52-81-1234-5678"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  value={formData.contactInfo?.email || ''}
-                  onChange={(e) => handleNestedChange('contactInfo', 'email', e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="admin@privada.com"
-                />
-                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Sitio Web
-                </label>
-                <input
-                  type="url"
-                  value={formData.contactInfo?.website || ''}
-                  onChange={(e) => handleNestedChange('contactInfo', 'website', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="www.privada.com"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Security Settings */}
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Configuración de Seguridad</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Código de Comunidad *
-                </label>
-                <div className="flex space-x-2">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Información Básica */}
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Información Básica</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nombre de la Organización *
+                  </label>
                   <input
                     type="text"
-                    value={formData.settings?.security?.communityCode || ''}
-                    onChange={(e) => handleNestedChange('settings', 'security', {
-                      ...formData.settings?.security,
-                      communityCode: e.target.value
-                    })}
-                    className={`flex-1 px-3 py-2 border rounded-md ${
-                      errors.communityCode ? 'border-red-500' : 'border-gray-300'
-                    }`}
-                    placeholder="SJ2024"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
                   />
-                  <button
-                    type="button"
-                    onClick={generateCommunityCode}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-                  >
-                    Generar
-                  </button>
                 </div>
-                {errors.communityCode && <p className="mt-1 text-sm text-red-600">{errors.communityCode}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Expiración de QR (horas)
-                </label>
-                <input
-                  type="number"
-                  value={formData.settings?.security?.qrCodeExpiryHours || 24}
-                  onChange={(e) => handleNestedChange('settings', 'security', {
-                    ...formData.settings?.security,
-                    qrCodeExpiryHours: parseInt(e.target.value)
-                  })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  min="1"
-                  max="168"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Máximo de Huéspedes por Residente
-                </label>
-                <input
-                  type="number"
-                  value={formData.settings?.security?.maxGuestsPerResident || 5}
-                  onChange={(e) => handleNestedChange('settings', 'security', {
-                    ...formData.settings?.security,
-                    maxGuestsPerResident: parseInt(e.target.value)
-                  })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  min="1"
-                  max="20"
-                />
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="requirePhoto"
-                  checked={formData.settings?.security?.requirePhotoForGuests || false}
-                  onChange={(e) => handleNestedChange('settings', 'security', {
-                    ...formData.settings?.security,
-                    requirePhotoForGuests: e.target.checked
-                  })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="requirePhoto" className="text-sm font-medium text-gray-700">
-                  Requerir foto para huéspedes
-                </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nombre de Display *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.displayName}
+                    onChange={(e) => handleInputChange('displayName', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Theme Settings */}
-          <div className="border-t pt-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Tema y Colores</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Color Principal
-                </label>
-                <input
-                  type="color"
-                  value={formData.settings?.theme?.primaryColor || '#007AFF'}
-                  onChange={(e) => handleNestedChange('settings', 'theme', {
-                    ...formData.settings?.theme,
-                    primaryColor: e.target.value
-                  })}
-                  className="w-full h-10 border border-gray-300 rounded-md"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Color Secundario
-                </label>
-                <input
-                  type="color"
-                  value={formData.settings?.theme?.secondaryColor || '#10b981'}
-                  onChange={(e) => handleNestedChange('settings', 'theme', {
-                    ...formData.settings?.theme,
-                    secondaryColor: e.target.value
-                  })}
-                  className="w-full h-10 border border-gray-300 rounded-md"
-                />
+            {/* Ubicación */}
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Ubicación</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Dirección *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.address}
+                    onChange={(e) => handleInputChange('address', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ciudad *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => handleInputChange('city', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Estado *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.state}
+                    onChange={(e) => handleInputChange('state', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Código Postal
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.zipCode}
+                    onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Form Actions */}
-          <div className="flex justify-end space-x-3 pt-6 border-t">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50"
-            >
-              {loading ? 'Guardando...' : mode === 'create' ? 'Crear Comunidad' : 'Guardar Cambios'}
-            </button>
-          </div>
-        </form>
+            {/* Información de Contacto */}
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Información de Contacto</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.contactInfo.email}
+                    onChange={(e) => handleNestedChange('contactInfo', 'email', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Teléfono
+                  </label>
+                  <input
+                    type="tel"
+                    value={formData.contactInfo.phone}
+                    onChange={(e) => handleNestedChange('contactInfo', 'phone', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Sitio Web
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.contactInfo.website}
+                    onChange={(e) => handleNestedChange('contactInfo', 'website', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Configuración de Seguridad */}
+            <div className="bg-gray-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Configuración de Seguridad</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Código de Comunidad *
+                  </label>
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={formData.settings.security.communityCode}
+                      onChange={(e) => handleNestedChange('settings.security', 'communityCode', e.target.value)}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={generateCommunityCode}
+                      className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Generar
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Expiración QR (horas)
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.settings.security.qrCodeExpiryHours}
+                    onChange={(e) => handleNestedChange('settings.security', 'qrCodeExpiryHours', parseInt(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    min="1"
+                    max="168"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="requirePhoto"
+                    checked={formData.settings.security.requirePhotoForGuests}
+                    onChange={(e) => handleNestedChange('settings.security', 'requirePhotoForGuests', e.target.checked)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label htmlFor="requirePhoto" className="text-sm font-medium text-gray-700">
+                    Requerir foto para invitados
+                  </label>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Máximo invitados por residente
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.settings.security.maxGuestsPerResident}
+                    onChange={(e) => handleNestedChange('settings.security', 'maxGuestsPerResident', parseInt(e.target.value))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    min="1"
+                    max="20"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Botones de Acción */}
+            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Guardando...' : mode === 'create' ? 'Crear Organización' : 'Guardar Cambios'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
