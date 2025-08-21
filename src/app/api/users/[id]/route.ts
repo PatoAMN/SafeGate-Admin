@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../../lib/firebase';
+import { db } from '../../../../lib/firebase';
 
 // PUT /api/users/[id]
 export async function PUT(
