@@ -14,6 +14,7 @@ interface User {
   address?: string;
   createdAt: Date;
   lastLogin?: Date;
+  password?: string; // Para creación de usuarios
 }
 
 interface Organization {
@@ -36,6 +37,8 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    password: '',
+    confirmPassword: '',
     role: 'member' as 'member' | 'guard' | 'admin',
     status: 'active' as 'active' | 'inactive',
     phone: '',
@@ -51,6 +54,8 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
       setFormData({
         name: user.name,
         email: user.email,
+        password: '', // No mostrar contraseña al editar
+        confirmPassword: '',
         role: user.role,
         status: user.status,
         phone: user.phone || '',
@@ -79,6 +84,21 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
       newErrors.email = 'El email no es válido';
     }
 
+    // Validar contraseña solo para usuarios nuevos
+    if (!user) {
+      if (!formData.password) {
+        newErrors.password = 'La contraseña es requerida';
+      } else if (formData.password.length < 6) {
+        newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+      }
+
+      if (!formData.confirmPassword) {
+        newErrors.confirmPassword = 'Confirma la contraseña';
+      } else if (formData.password !== formData.confirmPassword) {
+        newErrors.confirmPassword = 'Las contraseñas no coinciden';
+      }
+    }
+
     if (!formData.organizationId) {
       newErrors.organizationId = 'Debes seleccionar una comunidad';
     }
@@ -100,6 +120,7 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
         await onSave({
           name: formData.name.trim(),
           email: formData.email.trim(),
+          password: formData.password, // Solo para usuarios nuevos
           role: formData.role,
           status: formData.status,
           phone: formData.phone.trim() || undefined,
@@ -184,6 +205,68 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
                 <p className="mt-1 text-sm text-red-600">{errors.email}</p>
               )}
             </div>
+
+            {/* Contraseña - Solo para usuarios nuevos */}
+            {!user && (
+              <>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-sm font-medium text-blue-800">
+                      🔐 Cuenta de Acceso (Actualizado)
+                    </span>
+                  </div>
+                  <p className="text-xs text-blue-700 mt-1">
+                    Se creará una cuenta de usuario con email y contraseña para que pueda acceder a la app móvil.
+                  </p>
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                    Contraseña *
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={formData.password}
+                    onChange={(e) => handleChange('password', e.target.value)}
+                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white ${
+                      errors.password ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Mínimo 6 caracteres"
+                    disabled={isSubmitting}
+                  />
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                  )}
+                  <p className="mt-1 text-xs text-gray-500">
+                    La contraseña debe tener al menos 6 caracteres
+                  </p>
+                </div>
+
+                <div>
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                    Confirmar Contraseña *
+                  </label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleChange('confirmPassword', e.target.value)}
+                    className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white ${
+                      errors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    placeholder="Repite la contraseña"
+                    disabled={isSubmitting}
+                  />
+                  {errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Comunidad */}
             <div>
