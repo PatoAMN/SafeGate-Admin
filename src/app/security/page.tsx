@@ -254,7 +254,7 @@ export default function SecurityPage() {
                     type="number"
                     value={securitySettings.qrCodeExpiryHours}
                     onChange={(e) => handleSettingChange('qrCodeExpiryHours', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     min="1"
                     max="168"
                   />
@@ -268,7 +268,7 @@ export default function SecurityPage() {
                     type="number"
                     value={securitySettings.maxGuestsPerResident}
                     onChange={(e) => handleSettingChange('maxGuestsPerResident', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     min="1"
                     max="20"
                   />
@@ -315,7 +315,7 @@ export default function SecurityPage() {
                     type="number"
                     value={securitySettings.failedLoginAttempts}
                     onChange={(e) => handleSettingChange('failedLoginAttempts', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     min="1"
                     max="10"
                   />
@@ -329,7 +329,7 @@ export default function SecurityPage() {
                     type="number"
                     value={securitySettings.lockoutDurationMinutes}
                     onChange={(e) => handleSettingChange('lockoutDurationMinutes', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     min="5"
                     max="1440"
                   />
@@ -350,7 +350,7 @@ export default function SecurityPage() {
                     type="number"
                     value={securitySettings.sessionTimeoutMinutes}
                     onChange={(e) => handleSettingChange('sessionTimeoutMinutes', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     min="15"
                     max="1440"
                   />
@@ -364,7 +364,7 @@ export default function SecurityPage() {
                     type="number"
                     value={securitySettings.accessLogRetentionDays}
                     onChange={(e) => handleSettingChange('accessLogRetentionDays', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     min="30"
                     max="365"
                   />
