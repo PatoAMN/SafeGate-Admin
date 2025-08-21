@@ -153,7 +153,7 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
                 id="name"
                 value={formData.name}
                 onChange={(e) => handleChange('name', e.target.value)}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white ${
                   errors.name ? 'border-red-300' : 'border-gray-300'
                 }`}
                 placeholder="Juan Pérez"
@@ -174,7 +174,7 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
                 id="email"
                 value={formData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white ${
                   errors.email ? 'border-red-300' : 'border-gray-300'
                 }`}
                 placeholder="juan@example.com"
@@ -194,7 +194,7 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
                 id="organizationId"
                 value={formData.organizationId}
                 onChange={(e) => handleChange('organizationId', e.target.value)}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white ${
                   errors.organizationId ? 'border-red-300' : 'border-gray-300'
                 }`}
                 disabled={isSubmitting}
@@ -233,7 +233,7 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
                 id="role"
                 value={formData.role}
                 onChange={(e) => handleChange('role', e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white"
                 disabled={isSubmitting}
               >
                 <option value="member">Residente</option>
@@ -251,7 +251,7 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
                 id="status"
                 value={formData.status}
                 onChange={(e) => handleChange('status', e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white"
                 disabled={isSubmitting}
               >
                 <option value="active">Activo</option>
@@ -269,7 +269,7 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ${
+                className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white ${
                   errors.phone ? 'border-red-300' : 'border-gray-300'
                 }`}
                 placeholder="+52 55 1234 5678"
@@ -290,7 +290,7 @@ export function UserForm({ user, organizations, onSave, onCancel }: UserFormProp
                 value={formData.address}
                 onChange={(e) => handleChange('address', e.target.value)}
                 rows={3}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 bg-white"
                 placeholder="Calle San José 123, Casa 45"
                 disabled={isSubmitting}
               />

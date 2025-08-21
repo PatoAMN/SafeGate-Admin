@@ -181,7 +181,7 @@ export default function OrganizationForm({
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     required
                   />
                 </div>
@@ -193,7 +193,7 @@ export default function OrganizationForm({
                     type="text"
                     value={formData.displayName}
                     onChange={(e) => handleInputChange('displayName', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     required
                   />
                 </div>
@@ -212,7 +212,7 @@ export default function OrganizationForm({
                     type="text"
                     value={formData.address}
                     onChange={(e) => handleInputChange('address', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     required
                   />
                 </div>
@@ -224,7 +224,7 @@ export default function OrganizationForm({
                     type="text"
                     value={formData.city}
                     onChange={(e) => handleInputChange('city', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     required
                   />
                 </div>
@@ -236,7 +236,7 @@ export default function OrganizationForm({
                     type="text"
                     value={formData.state}
                     onChange={(e) => handleInputChange('state', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     required
                   />
                 </div>
@@ -248,7 +248,7 @@ export default function OrganizationForm({
                     type="text"
                     value={formData.zipCode}
                     onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   />
                 </div>
               </div>
@@ -266,7 +266,7 @@ export default function OrganizationForm({
                     type="email"
                     value={formData.contactInfo.email}
                     onChange={(e) => handleNestedChange('contactInfo', 'email', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   />
                 </div>
                 <div>
@@ -277,7 +277,7 @@ export default function OrganizationForm({
                     type="tel"
                     value={formData.contactInfo.phone}
                     onChange={(e) => handleNestedChange('contactInfo', 'phone', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   />
                 </div>
                 <div>
@@ -288,7 +288,7 @@ export default function OrganizationForm({
                     type="url"
                     value={formData.contactInfo.website}
                     onChange={(e) => handleNestedChange('contactInfo', 'website', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                   />
                 </div>
               </div>
@@ -307,7 +307,7 @@ export default function OrganizationForm({
                       type="text"
                       value={formData.settings.security.communityCode}
                       onChange={(e) => handleNestedChange('settings.security', 'communityCode', e.target.value)}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                       required
                     />
                     <button
@@ -327,7 +327,7 @@ export default function OrganizationForm({
                     type="number"
                     value={formData.settings.security.qrCodeExpiryHours}
                     onChange={(e) => handleNestedChange('settings.security', 'qrCodeExpiryHours', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     min="1"
                     max="168"
                   />
@@ -352,7 +352,7 @@ export default function OrganizationForm({
                     type="number"
                     value={formData.settings.security.maxGuestsPerResident}
                     onChange={(e) => handleNestedChange('settings.security', 'maxGuestsPerResident', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
                     min="1"
                     max="20"
                   />
