@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.2.0",
     "@types/uuid": "^10.0.0",
     "firebase": "^12.1.0",
+    "firebase-admin": "^13.4.0",
     "lucide-react": "^0.540.0",
     "next": "15.4.7",
     "react": "19.1.0",
