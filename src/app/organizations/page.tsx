@@ -283,7 +283,12 @@ export default function OrganizationsPage() {
                   Guardias
                 </th>
                 <th className="px-8 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Código
+                  <div className="flex items-center">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                    Código de Comunidad
+                  </div>
                 </th>
                 <th className="px-8 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Estado
@@ -332,9 +337,47 @@ export default function OrganizationsPage() {
                     </span>
                   </td>
                   <td className="px-8 py-6 whitespace-nowrap">
-                    <code className="text-sm bg-gray-100 px-3 py-1 rounded-lg font-mono">
-                      {org.settings?.security?.communityCode || 'N/A'}
-                    </code>
+                    <div className="flex flex-col items-start space-y-2">
+                      <div className="text-xs font-medium text-gray-600 uppercase tracking-wider flex items-center">
+                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        </svg>
+                        Código de Comunidad
+                      </div>
+                      <button
+                        onClick={async () => {
+                          if (org.settings?.security?.communityCode) {
+                            try {
+                              await navigator.clipboard.writeText(org.settings.security.communityCode);
+                              // Mostrar feedback visual
+                              const button = event?.target as HTMLElement;
+                              if (button) {
+                                const originalText = button.textContent;
+                                const originalClasses = button.className;
+                                button.textContent = '¡Copiado! ✓';
+                                button.className = originalClasses.replace('from-blue-500 to-indigo-600', 'from-green-500 to-emerald-600');
+                                setTimeout(() => {
+                                  button.textContent = originalText;
+                                  button.className = originalClasses;
+                                }, 2000);
+                              }
+                            } catch (err) {
+                              console.error('Error al copiar:', err);
+                              alert('Error al copiar el código');
+                            }
+                          }
+                        }}
+                        className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-2 rounded-xl font-mono text-sm font-bold shadow-lg border-2 border-blue-400/30 min-w-[120px] text-center transition-all duration-200 hover:scale-105 cursor-pointer"
+                        title={`Haz clic para copiar el código: ${org.settings?.security?.communityCode || 'No disponible'}`}
+                        aria-label={`Código de comunidad: ${org.settings?.security?.communityCode || 'No disponible'}. Haz clic para copiar.`}
+                      >
+                        {org.settings?.security?.communityCode ? (
+                          org.settings.security.communityCode
+                        ) : (
+                          <span className="text-gray-300">Sin código</span>
+                        )}
+                      </button>
+                    </div>
                   </td>
                   <td className="px-8 py-6 whitespace-nowrap">
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${

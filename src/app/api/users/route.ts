@@ -1,19 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, serverTimestamp } from 'firebase-admin/firestore';
-import { adminAuth, adminDb } from '../../../lib/firebase-admin';
+import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, where, serverTimestamp } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, listUsers } from 'firebase/auth';
+import { db, auth } from '../../../lib/firebase';
 
 // GET /api/users
 export async function GET() {
   try {
-    const usersRef = collection(adminDb, 'users');
+    // Obtener usuarios de Firestore
+    const usersRef = collection(db, 'users');
     const snapshot = await getDocs(usersRef);
 
-    const users = snapshot.docs.map(doc => ({
+    const firestoreUsers = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
 
-    return NextResponse.json(users);
+    // Obtener usuarios de Firebase Auth (solo en desarrollo)
+    let authUsers = [];
+    try {
+      // Nota: listUsers solo está disponible en Firebase Admin SDK
+      // Para el cliente, necesitamos usar un enfoque diferente
+      // Por ahora, solo retornamos usuarios de Firestore
+      console.log('📊 Cargando usuarios desde Firestore:', firestoreUsers.length);
+    } catch (authError) {
+      console.log('⚠️ No se pueden listar usuarios de Auth desde el cliente');
+    }
+
+    // Combinar usuarios de Firestore con información de Auth
+    const allUsers = firestoreUsers.map(user => ({
+      ...user,
+      source: 'firestore',
+      // Asegurar que los campos requeridos estén presentes
+      role: user.role || 'member',
+      status: user.status || 'active',
+      organizationId: user.organizationId || '',
+      createdAt: user.createdAt || new Date(),
+      updatedAt: user.updatedAt || new Date()
+    }));
+
+    console.log(`✅ Total de usuarios cargados: ${allUsers.length}`);
+    return NextResponse.json(allUsers);
+    
   } catch (error) {
     console.error('Error fetching users:', error);
     return NextResponse.json(
@@ -52,28 +79,28 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-      // Create Firebase Auth user account using Admin SDK
+      // Create Firebase Auth user account
       console.log('🔥 Creando cuenta de Firebase Auth para:', body.email);
-      const userRecord = await adminAuth.createUser({
-        email: body.email,
-        password: body.password,
-        displayName: body.name
-      });
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        body.email,
+        body.password
+      );
       
-      console.log('✅ Usuario de Firebase Auth creado:', userRecord.uid);
+      console.log('✅ Usuario de Firebase Auth creado:', userCredential.user.uid);
 
       // Prepare user data for Firestore (without password)
       const { password, ...userDataWithoutPassword } = body;
       const userData = {
         ...userDataWithoutPassword,
-        firebaseUid: userRecord.uid, // Link with Firebase Auth
+        firebaseUid: userCredential.user.uid, // Link with Firebase Auth
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         status: body.status || 'active'
       };
 
-      // Save user data to Firestore using Admin SDK
-      const docRef = await addDoc(collection(adminDb, 'users'), userData);
+      // Save user data to Firestore
+      const docRef = await addDoc(collection(db, 'users'), userData);
 
       const newUser = {
         id: docRef.id,

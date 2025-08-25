@@ -107,11 +107,46 @@ export default function OrganizationForm({
   };
 
   const handleNestedChange = (parent: string, child: string, value: any) => {
+    if (parent === 'settings.security') {
+      setFormData(prev => ({
+        ...prev,
+        settings: {
+          ...prev.settings,
+          security: {
+            ...prev.settings.security,
+            [child]: value
+          }
+        }
+      }));
+    } else if (parent === 'contactInfo') {
+      setFormData(prev => ({
+        ...prev,
+        contactInfo: {
+          ...prev.contactInfo,
+          [child]: value
+        }
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [parent]: {
+          ...prev[parent as keyof OrganizationFormData],
+          [child]: value
+        }
+      }));
+    }
+  };
+
+  const handleCommunityCodeChange = (value: string) => {
+    console.log('🔄 Cambiando código de comunidad a:', value);
     setFormData(prev => ({
       ...prev,
-      [parent]: {
-        ...prev[parent as keyof OrganizationFormData],
-        [child]: value
+      settings: {
+        ...prev.settings,
+        security: {
+          ...prev.settings.security,
+          communityCode: value
+        }
       }
     }));
   };
@@ -132,10 +167,20 @@ export default function OrganizationForm({
         }
       }
     }));
+    
+    // Mostrar mensaje de confirmación
+    console.log(`✅ Código generado: ${code}`);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validar que el código de comunidad no esté vacío
+    if (!formData.settings.security.communityCode.trim()) {
+      alert('⚠️ Por favor ingresa o genera un código de comunidad');
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -302,21 +347,35 @@ export default function OrganizationForm({
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Código de Comunidad *
                   </label>
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={formData.settings.security.communityCode}
-                      onChange={(e) => handleNestedChange('settings.security', 'communityCode', e.target.value)}
-                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={generateCommunityCode}
-                      className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      Generar
-                    </button>
+                  <div className="space-y-2">
+                    <div className="flex space-x-2">
+                      <input
+                        type="text"
+                        value={formData.settings.security.communityCode}
+                        onChange={(e) => handleCommunityCodeChange(e.target.value)}
+                        placeholder="Ingresa tu código personalizado o genera uno automático"
+                        className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={generateCommunityCode}
+                        className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors whitespace-nowrap"
+                      >
+                        Generar
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      💡 Puedes usar cualquier código que prefieras (no hay límite de dígitos) o generar uno automático
+                    </p>
+                    {formData.settings.security.communityCode && (
+                      <div className="flex items-center space-x-2 text-xs">
+                        <span className="text-green-600">✅</span>
+                        <span className="text-gray-600">
+                          Código actual: <strong>{formData.settings.security.communityCode}</strong>
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div>
